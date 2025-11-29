@@ -56,16 +56,16 @@ export default function PageLayer({ renderPageProps, boxes }) {
             >
                 {pageBoxes.map((b, i) => {
 
-                    const offsetX = -1;  // tweak by eye
-                    const offsetY = -0.5;
+                    const offsetX = -.70;  // tweak by eye
+                    const offsetY = -1;
 
-                    const offsetW = -1;
-                    const offsetH = -1;
+                    const offsetW = -.75;
+                    const offsetH = -.75;
 
                     const x = b.x0 * scaleX + offsetX;
                     const y = b.y0 * scaleY + offsetY;
-                    const w = (b.x1 - b.x0) * (scaleX + offsetW);
-                    const h = (b.y1 - b.y0) * (scaleY + offsetH);
+                    const w = (b.x1 - b.x0) * scaleX + offsetW;
+                    const h = (b.y1 - b.y0) * scaleY + offsetH;
 
                     return (
                         <div
