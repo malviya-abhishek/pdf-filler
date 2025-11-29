@@ -1,4 +1,4 @@
 frontend/node_modules
-pdf-from-backend/node_modules
-pdf-from-backend/dist
-pdf-form-backend/uploads/*.pdf
+backend/node_modules
+backend/dist
+backend/uploads/*.pdf
