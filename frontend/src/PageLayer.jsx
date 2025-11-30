@@ -1,7 +1,16 @@
 // PageLayer.jsx
 import React from "react";
 
-export default function PageLayer({ renderPageProps, boxes }) {
+const RUN_COLORS = [
+    "rgba(255, 0, 0, 0.8)",
+    "rgba(0, 128, 0, 0.8)",
+    "rgba(0, 0, 255, 0.8)",
+    "rgba(255, 165, 0, 0.8)",
+    "rgba(128, 0, 128, 0.8)",
+    "rgba(0, 206, 209, 0.8)",
+];
+
+export default function PageLayer({ renderPageProps, boxes, boxValues, onBoxChange }) {
     const {
         pageIndex,
         width,
@@ -16,11 +25,13 @@ export default function PageLayer({ renderPageProps, boxes }) {
 
 
 
-
-    const pageInfo = boxes[`page_${pageIndex}`] || { width: 1, height: 1, boxes: [] };
+    const pageKey = `page_${pageIndex}`;
+    const pageInfo = boxes[pageKey] || { width: 1, height: 1, boxes: [] };
     const pdfWidth = pageInfo.width;
     const pdfHeight = pageInfo.height;
     const pageBoxes = pageInfo.boxes || [];
+    const pageRuns = pageInfo.runs || [];
+
 
     const scaleX = width / pdfWidth;
     const scaleY = height / pdfHeight;
@@ -32,8 +43,6 @@ export default function PageLayer({ renderPageProps, boxes }) {
         }
     }, [textLayerRendered, pageIndex, markRendered]);
 
-
-
     return (
         <div
             style={{
@@ -42,51 +51,125 @@ export default function PageLayer({ renderPageProps, boxes }) {
                 height,
             }}
         >
-            {/* Original PDF content */}
-            {canvasLayer.children}
+            <div style={{ pointerEvents: "none" }}>
+                {canvasLayer.children}
+                {textLayer.children}
+                {annotationLayer.children}
+            </div>
 
-            {/* Our overlay */}
             <div
                 style={{
                     position: "absolute",
                     inset: 0,
-                    pointerEvents: "none",
-                    zIndex: 50,
+                    zIndex: 1000,
                 }}
             >
-                {pageBoxes.map((b, i) => {
+                {pageRuns.map((run, runIndex) => {
+                    const color = RUN_COLORS[runIndex % RUN_COLORS.length];
+                    return run.boxes.map((b, i) => {
+                        const offsetX = -.0;  // tweak by eye
+                        const offsetY = -0;
 
-                    const offsetX = -.70;  // tweak by eye
-                    const offsetY = -1;
+                        const offsetW = -.0;
+                        const offsetH = -.0;
 
-                    const offsetW = -.75;
-                    const offsetH = -.75;
+                        const x = b.x0 * scaleX + offsetX;
+                        const y = b.y0 * scaleY + offsetY;
+                        const w = (b.x1 - b.x0) * scaleX + offsetW;
+                        const h = (b.y1 - b.y0) * scaleY + offsetH;
 
-                    const x = b.x0 * scaleX + offsetX;
-                    const y = b.y0 * scaleY + offsetY;
-                    const w = (b.x1 - b.x0) * scaleX + offsetW;
-                    const h = (b.y1 - b.y0) * scaleY + offsetH;
+                        const boxId = `${pageKey}:${run.id}:${i}`;
+                        const value = boxValues[boxId] || "";
 
-                    return (
-                        <div
-                            key={i}
-                            style={{
-                                position: "absolute",
-                                border: "1px solid red",
-                                top: y,
-                                left: x,
-                                width: w,
-                                height: h,
-                                pointerEvents: "none",
-                            }}
-                        />
-                    );
+                        return (
+                            <input
+                                key={boxId}
+                                value={value}
+                                maxLength={1}
+                                onChange={(e) => onBoxChange(boxId, e.target.value)}
+                                style={{
+                                    position: "absolute",
+                                    top: y,
+                                    left: x,
+                                    width: w,
+                                    height: h,
+                                    border: `1px solid ${color}`,
+                                    boxSizing: "border-box",
+                                    background: "transparent",
+                                    textAlign: "center",
+                                    fontSize: Math.max(h * 0.6, 8),
+                                    fontFamily: "monospace",
+                                    padding: 0,
+                                    margin: 0,
+                                    outline: "none",
+                                }}
+
+                            />
+                        );
+                    });
                 })}
             </div>
-
-            {/* Text + annotations on top */}
-            {textLayer.children}
-            {annotationLayer.children}
         </div>
     );
+
+
+
 }
+
+
+// return (
+//     <div
+//         style={{
+//             position: "relative",
+//             width,
+//             height,
+//         }}
+//     >
+//         {/* Original PDF content */}
+//         <div style={{ pointerEvents: "none" }}>
+//             {canvasLayer.children}
+//             {textLayer.children}
+//             {annotationLayer.children}
+//         </div>
+
+//         {/* Our overlay */}
+//         <div
+//             style={{
+//                 position: "absolute",
+//                 inset: 0,
+//                 zIndex: 1000,
+//             }}
+//         >
+//             {pageBoxes.map((b, i) => {
+
+//                 const offsetX = -.70;  // tweak by eye
+//                 const offsetY = -1;
+
+//                 const offsetW = -.75;
+//                 const offsetH = -.75;
+
+//                 const x = b.x0 * scaleX + offsetX;
+//                 const y = b.y0 * scaleY + offsetY;
+//                 const w = (b.x1 - b.x0) * scaleX + offsetW;
+//                 const h = (b.y1 - b.y0) * scaleY + offsetH;
+
+//                 return (
+//                     <div
+//                         key={i}
+//                         style={{
+//                             position: "absolute",
+//                             border: "1px solid red",
+//                             top: y,
+//                             left: x,
+//                             width: w,
+//                             height: h,
+//                             pointerEvents: "none",
+//                         }}
+//                     />
+//                 );
+//             })}
+//         </div>
+
+
+//     </div>
+// );

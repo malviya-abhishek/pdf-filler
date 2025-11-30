@@ -2,7 +2,7 @@ import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import PageLayer from "./PageLayer";
 
-export default function PdfViewer({ pdfUrl, boxes }) {
+export default function PdfViewer({ pdfUrl, boxes, boxValues, onBoxChange }) {
     return (
         <div style={{ position: "relative", width: "100%" }}>
             <Worker workerUrl="/pdf.worker.min.js">
@@ -13,6 +13,8 @@ export default function PdfViewer({ pdfUrl, boxes }) {
                         <PageLayer
                             renderPageProps={renderPageProps}
                             boxes={boxes}
+                            boxValues={boxValues}
+                            onBoxChange={onBoxChange}
                         />
                     )}
                 />
