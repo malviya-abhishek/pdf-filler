@@ -6,8 +6,8 @@ import os
 
 # Import your existing detect_boxes function
 from detect_boxes import detect_boxes
-# FONT_PATH = "python/fonts/arial_font.ttf"
 FONT_PATH = "python/fonts/rf.ttf"
+FONT = fitz.Font(fontfile=FONT_PATH)
 
 
 FONT_PATH = os.path.join(
@@ -48,21 +48,48 @@ def draw_text_in_box(page, box, char, font_size=8):
     if box_w <= 0 or box_h <= 0:
         print("[WARN] Degenerate box rect:", rect)
         return
-
-    # Choose font size relative to box size
-    # Letter boxes are usually small; make font slightly smaller than box
-
-
-    page.draw_rect(rect, color=(1, 0, 0), width=0.5)
     
-    page.insert_textbox(
-        rect,
-        char,
-        fontsize=6,
-        fontfile=FONT_PATH,
-        color=(0, 0, 0),
-        align=fitz.TEXT_ALIGN_CENTER,   # exactly centered horizontally
+    base = min(box_w, box_h)
+
+    # Font sizes to try – descending
+    candidate_sizes = [
+        base * 0.9,
+        base * 0.8,
+        base * 0.7,
+        base * 0.6,
+        base * 0.5,
+        8, 
+        7, 
+        6, 
+        5, 
+        4, 
+        3
+    ]
+
+    margin = min(rect.width, rect.height) * 0.05 
+
+    margin_rect = fitz.Rect(
+        rect.x0 + margin,
+        rect.y0 + margin,
+        rect.x1 - margin,
+        rect.y1 - margin,
     )
+
+    page.draw_rect(margin_rect, color=(1, 0, 0), width=0.5)
+
+    page.draw_rect(rect, color=(0, 1, 0), width=0.5)
+
+    for fs in candidate_sizes:
+        rc = page.insert_textbox(
+            margin_rect,
+            char,
+            fontsize=fs,
+            fontfile=FONT_PATH,
+            color=(0, 0, 0),
+            align=fitz.TEXT_ALIGN_CENTER,   # exactly centered horizontally
+        )
+        if rc >= 0.0:
+            break;
 
 
 def fill_from_box_values(input_pdf_path: str, box_values_path: str, output_pdf_path: str):

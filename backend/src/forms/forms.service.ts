@@ -99,6 +99,10 @@ export class FormsService {
 
         let stderr = '';
 
+        py.stdout.on('data', (data) => {
+          console.log(`Python stdout: ${data}`);
+        });
+
         py.stderr.on('data', (data) => {
           stderr += data.toString();
         });
