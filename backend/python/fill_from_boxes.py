@@ -2,6 +2,7 @@ import sys
 import json
 import fitz  # PyMuPDF
 from pathlib import Path
+import os
 
 # Import your existing detect_boxes function
 from detect_boxes import detect_boxes
@@ -9,6 +10,11 @@ from detect_boxes import detect_boxes
 FONT_PATH = "python/fonts/rf.ttf"
 
 
+FONT_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "fonts",
+    "rf.ttf",   # adjust to your actual file
+)
 
 def draw_text_in_box(page, box, char, font_size=8):
     """
@@ -17,6 +23,11 @@ def draw_text_in_box(page, box, char, font_size=8):
     """
     if not char:
         return
+    
+    if not os.path.exists(FONT_PATH):
+        print(f"[WARN] Font file not found at {FONT_PATH}")
+        return
+
 
     x0, y0, x1, y1 = box["x0"], box["y0"], box["x1"], box["y1"]
 
@@ -28,17 +39,26 @@ def draw_text_in_box(page, box, char, font_size=8):
     cx = x0 + box_width / 2.0
     cy = y0 + box_height / 2.0
 
-    # PyMuPDF: text is drawn from baseline → shift a bit so it looks centered
-    baseline_y = cy + font_size * 0.3
-
     rect = fitz.Rect(box["x0"], box["y0"], box["x1"], box["y1"])
+
+    box_w = rect.width
+    box_h = rect.height
+
+    # If the box is degenerate, skip
+    if box_w <= 0 or box_h <= 0:
+        print("[WARN] Degenerate box rect:", rect)
+        return
+
+    # Choose font size relative to box size
+    # Letter boxes are usually small; make font slightly smaller than box
+
 
     page.draw_rect(rect, color=(1, 0, 0), width=0.5)
     
     page.insert_textbox(
         rect,
         char,
-        fontsize=font_size,
+        fontsize=6,
         fontfile=FONT_PATH,
         color=(0, 0, 0),
         align=fitz.TEXT_ALIGN_CENTER,   # exactly centered horizontally
