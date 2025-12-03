@@ -6,6 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import "./index.css";
 
+const API_URL = window.location.origin;
+
 export default function App() {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [boxes, setBoxes] = useState(null);
@@ -23,7 +25,7 @@ export default function App() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch("http://localhost:3000/forms/detect", {
+    const response = await fetch(`${API_URL}/forms/detect`, {
       method: "POST",
       body: formData,
     });
@@ -57,7 +59,7 @@ export default function App() {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://localhost:3000/forms/fill`, {
+      const res = await fetch(`${API_URL}/forms/fill`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ file: uploadedFileName, boxValues }),
