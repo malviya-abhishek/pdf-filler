@@ -49,9 +49,10 @@ export default function PageLayer({ renderPageProps, boxes, boxValues, onBoxChan
                 position: "relative",
                 width,
                 height,
+                // border: "2px solid red"
             }}
         >
-            <div style={{ pointerEvents: "none" }}>
+            <div style={{ pointerEvents: "none", border: " 2px solid green" }}>
                 {canvasLayer.children}
                 {textLayer.children}
                 {annotationLayer.children}
@@ -115,61 +116,3 @@ export default function PageLayer({ renderPageProps, boxes, boxValues, onBoxChan
 
 
 }
-
-
-// return (
-//     <div
-//         style={{
-//             position: "relative",
-//             width,
-//             height,
-//         }}
-//     >
-//         {/* Original PDF content */}
-//         <div style={{ pointerEvents: "none" }}>
-//             {canvasLayer.children}
-//             {textLayer.children}
-//             {annotationLayer.children}
-//         </div>
-
-//         {/* Our overlay */}
-//         <div
-//             style={{
-//                 position: "absolute",
-//                 inset: 0,
-//                 zIndex: 1000,
-//             }}
-//         >
-//             {pageBoxes.map((b, i) => {
-
-//                 const offsetX = -.70;  // tweak by eye
-//                 const offsetY = -1;
-
-//                 const offsetW = -.75;
-//                 const offsetH = -.75;
-
-//                 const x = b.x0 * scaleX + offsetX;
-//                 const y = b.y0 * scaleY + offsetY;
-//                 const w = (b.x1 - b.x0) * scaleX + offsetW;
-//                 const h = (b.y1 - b.y0) * scaleY + offsetH;
-
-//                 return (
-//                     <div
-//                         key={i}
-//                         style={{
-//                             position: "absolute",
-//                             border: "1px solid red",
-//                             top: y,
-//                             left: x,
-//                             width: w,
-//                             height: h,
-//                             pointerEvents: "none",
-//                         }}
-//                     />
-//                 );
-//             })}
-//         </div>
-
-
-//     </div>
-// );

@@ -75,9 +75,9 @@ def draw_text_in_box(page, box, char, font_size=8):
         rect.y1 - margin,
     )
 
-    page.draw_rect(margin_rect, color=(1, 0, 0), width=0.5)
+    # page.draw_rect(margin_rect, color=(1, 0, 0), width=0.5)
 
-    page.draw_rect(rect, color=(0, 1, 0), width=0.5)
+    # page.draw_rect(rect, color=(0, 1, 0), width=0.5)
 
     for fs in candidate_sizes:
         rc = page.insert_textbox(

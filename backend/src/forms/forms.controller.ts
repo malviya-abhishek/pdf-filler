@@ -46,11 +46,14 @@ export class FormsController {
         }
         cb(null, true);
       },
+      limits: {
+        fileSize: 1024 * 1024 * 5, // 5MB
+      }
     }),
   )
   async detect(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
-      throw new BadRequestException('File is required');
+      throw new BadRequestException('File is required or is too large file size is limited to 5MB');
     }
 
     const pdfPath = path.resolve(file.path);
@@ -81,7 +84,7 @@ export class FormsController {
       }
 
       // Ask service to generate filled PDF
-      const filledPdfPath = await this.formsService.fillPdf(file, boxValues);
+      const {filledPdfPath, boxValuesPath, inputPdfPath} = await this.formsService.fillPdf(file, boxValues);
 
       // stream the PDF back to client
       const fileName = path.basename(filledPdfPath);
@@ -92,12 +95,28 @@ export class FormsController {
       );
 
       const stream = fs.createReadStream(filledPdfPath);
+      // delete the created files
+      stream.on('close', async()=>{
+        fs.unlink(boxValuesPath, (err)=>{
+          if (err) {
+            this.logger.error('Error deleting boxValuesPath', err);
+          }
+        });
+        fs.unlink(filledPdfPath, (err)=>{
+          if (err) {
+            this.logger.error('Error deleting filledPdfPath', err);
+          }
+        });
+        fs.unlink(inputPdfPath, (err)=>{
+          if (err) {
+            this.logger.error('Error deleting inputPdfPath', err);
+          }
+        });
+      });
       stream.pipe(res);
-
     } catch (error) {
       console.log(error);
       throw error;
     }
-
   }
 }

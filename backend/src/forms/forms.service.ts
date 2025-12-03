@@ -55,7 +55,7 @@ export class FormsService {
   async fillPdf(
     fileName: string,
     boxValues: Record<string, string>,
-  ): Promise<string> {
+  ): Promise<{filledPdfPath: string, boxValuesPath: string, inputPdfPath: string}> {
     const projectRoot = process.cwd();
 
     // original uploaded PDF
@@ -125,6 +125,6 @@ export class FormsService {
       );
     }
 
-    return outputPdfPath;
+    return {filledPdfPath: outputPdfPath, boxValuesPath: boxValuesPath, inputPdfPath: inputPdfPath };
   }
 }

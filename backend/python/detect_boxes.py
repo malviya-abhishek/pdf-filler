@@ -77,50 +77,6 @@ def group_runs(boxes, y_threshold=2.0, gap_factor=2.5):
 
     return grouped
 
-# def group_runs(boxes, y_threshold=2.0):
-#     """
-#     Group boxes into horizontal runs based on their y position.
-#     y_threshold: maximum difference in y0 for boxes to be considered on same line.
-#     """
-#     if not boxes:
-#         return []
-
-#     # sort boxes top-to-bottom, left-to-right
-#     sorted_boxes = sorted(boxes, key=lambda b: (b["y0"], b["x0"]))
-
-#     runs = []
-#     current_run = [sorted_boxes[0]]
-#     # use the first box's y0 as baseline for the run
-#     current_y = sorted_boxes[0]["y0"]
-
-#     for b in sorted_boxes[1:]:
-#         if abs(b["y0"] - current_y) <= y_threshold:
-#             # same line
-#             current_run.append(b)
-#         else:
-#             # finish previous run
-#             runs.append(current_run)
-#             # start new run
-#             current_run = [b]
-#             current_y = b["y0"]
-
-#     # append last run
-#     if current_run:
-#         runs.append(current_run)
-
-#     grouped = []
-#     for idx, run_boxes in enumerate(runs):
-#         avg_y = sum(b["y0"] for b in run_boxes) / len(run_boxes)
-#         grouped.append(
-#             {
-#                 "id": f"run_{idx}",
-#                 "y": avg_y,
-#                 "boxes": run_boxes,
-#             }
-#         )
-
-#     return grouped
-
 
 def is_small_square(rect):
     x0, y0, x1, y1 = rect

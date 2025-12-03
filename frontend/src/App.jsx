@@ -1,5 +1,8 @@
 import { useState } from "react";
 import PdfViewer from "./PdfViewer";
+import "./index.css";
+
+
 
 export default function App() {
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -85,28 +88,31 @@ export default function App() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>PDF Viewer with Detected Boxes</h1>
-
-      <input type="file" accept="application/pdf" onChange={handleUpload} />
+    <div div className="page-root" >
+      <>
+        <input type="file" accept="application/pdf" onChange={handleUpload} />
+      </>
 
 
       {pdfUrl && boxes && (
         <>
-          <div style={{ marginBottom: 16 }}>
+          <div >
             <button onClick={handleFillPdf} disabled={loading}>
               Generate Filled PDF
             </button>
           </div>
-          <PdfViewer
-            pdfUrl={pdfUrl}
-            boxes={boxes}
-            boxValues={boxValues}
-            onBoxChange={handleBoxChange}
-          />
+
+          <div class="container">
+            <div class="pdf-viewer">
+              <PdfViewer
+                pdfUrl={pdfUrl}
+                boxes={boxes}
+                boxValues={boxValues}
+                onBoxChange={handleBoxChange}
+              />
+            </div>
+          </div>
         </>
-
-
       )}
     </div>
   );
