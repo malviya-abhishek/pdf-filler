@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import "./index.css";
 
 const API_URL = window.location.origin;
+// const API_URL = "http://localhost:3000";
 
 export default function App() {
   const [pdfUrl, setPdfUrl] = useState(null);
